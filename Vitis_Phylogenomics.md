@@ -1568,7 +1568,63 @@ beast -beagle -beagle_CPU -beagle_SSE -beagle_GPU -threads 16 Basal_mod_biallele
 
 ## Running SVDquartets
 
-Start with a file with all loci (NSPs) concatenated into a NEXUS file. Get the latest command-line version of [Paup](https://people.sc.fsu.edu/~dswofford/paup_test/) and type the following:
+Start with a file with all loci (NSPs) concatenated into a NEXUS file, you will use this in Paup.
+
+SVDquartets allows for multiple individuals from the same species to be included in the analysis, and those individual, and their information, will be combined into the taxon they belong to. For this to work however, you need to include a taxon block on your NEXUS file specifying which samples belong to which species. It should start with the species name, followed by a colon, the lines the individuals are located (or the range of lines) and a comma. Here is an example:
+
+```
+begin sets;
+taxpartition species =
+sp1: 1-4,
+sp2: 5,
+sp3: 6-7,
+;
+END;
+
+``` 
+This is easy to do for a few samples but if you have hundreds of individuals it becomes tedious very quickly. To make it a bit easier, use the R code below. **Note:** this code works on a *Phylip* file and not a *NEXUS*, so convert the NEXUS to Phylip using NCLconverter: `NCLconverter infile.nex -erelaxedphylip -ofileout`.
+
+
+```{R}
+### This script will format the settings file for SVDquartets
+### It will parse a phylip file and output the line number in which each taxon is located. Then it will write how many
+### occurrences a specific species has and the lines of each.
+### This works best with species names separated by an underscore, and it will assume that there are no subspecies,
+### i.e., only the fisrt two parts of the name will be used.
+### by Matthew Pennell, July 23 2014 - http://mwpennell.github.io/
+
+## Read in and parse phylip file
+phy.tab <- read.table(phylip.filename)
+phy.tab <- as.character(phy.tab[-1,1])
+
+## specific to my naming scheme using underscores
+get.species.name <- function(x){
+  tmp <- strsplit(x, split="_")
+  paste(tmp[[1]][1], tmp[[1]][2], sep="_")
+}
+
+## Get species names 
+sp.names <- as.character(sapply(phy.tab, function(x) get.species.name(x)))
+
+## get identity of matches
+sp.lab <- lapply(unique(sp.names), function(i) which(sp.names == i))
+names(sp.lab) <- unique(sp.names)
+
+## output to input file
+sink("SVDquartets_settings.txt")
+for (i in 1:length(sp.lab)){
+	cat(paste(names(sp.lab)[i], length(sp.lab[[i]]), sep=" : "))
+	cat("\n")
+	cat("\t")
+	cat(as.numeric(sp.lab[[i]]))
+	cat("\n")
+
+}
+sink()
+```
+One you have the location of every sample from the code above, modified the text slightly to match the correct format, i.e., put every occurrence in one line, add commas, etc. Finally, copy paste your sample-to-species information at the end of your concatenated NEXUS file—don;t forget to include the few lines that the code above doesn't generate, see the format example above!
+
+Now that we have the file ready, get the latest command-line version of [Paup](https://people.sc.fsu.edu/~dswofford/paup_test/) and type the following:
 
 ```
 paup
@@ -1577,15 +1633,14 @@ paup
 
 exe file.nex
 
-#No Bootstrap
-SVDQuartets nthreads=[number of processors] nquartets=10000000 [or other number] partition=species
+#No Bootstrap (remove the square brackets and information within)
+SVDQuartets nthreads=8[number of processors] nquartets=10000000[or other number] partition=species
 
 #Save the tree
 SaveTrees file = Vitis_SVDquartet.tre format = Newick brLens = yes supportValues = Both trees = all
 
 #With Bootstrap
 SVDQuartets nthreads=25 nquartets=10000000 bootstrap=standard nreps=50 speciesTree=yes partition=species treeFile= Vitis_SVDquartet_Bootstrap.trees
-
 
 ```
 
