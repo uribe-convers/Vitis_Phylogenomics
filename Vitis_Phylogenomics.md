@@ -1634,13 +1634,13 @@ paup
 exe file.nex
 
 #No Bootstrap (remove the square brackets and information within)
-SVDQuartets nthreads=8[number of processors] nquartets=10000000[or other number] partition=species
+SVDQuartets nthreads=[number of processors] nquartets=[number of quartets] partition=species speciesTree=yes
 
 #Save the tree
 SaveTrees file = Vitis_SVDquartet.tre format = Newick brLens = yes supportValues = Both trees = all
 
 #With Bootstrap
-SVDQuartets nthreads=25 nquartets=10000000 bootstrap=standard nreps=50 speciesTree=yes partition=species treeFile= Vitis_SVDquartet_Bootstrap.trees
+SVDQuartets nthreads=25 nquartets=10000000 bootstrap=standard nreps=100 speciesTree=yes partition=species treeFile= Vitis_SVDquartet_Bootstrap.trees
 
 ```
 
