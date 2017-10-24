@@ -28,9 +28,9 @@ if __name__ == "__main__":
         sys.exit("Missing either the VCF-to-Tab and/or the output files!")
 
 filename = open(sys.argv[1], "r")
-# filename = open("VCF_to_Tab.txt", "rU")
+
 outfile = open(sys.argv[2] + ".fasta", "w")
-# outfile = open("VCF_to_Tab_out.txt", "w")
+
 
 # def IUPAC_converter(filename, outfile):
 IUPAC_Codes = { "G/G" : "G", "C/C" : "C", "T/T" : "T", "A/A" : "A", 
@@ -49,14 +49,7 @@ for line in filename:
     # print(new_data)
     new_data2 = "".join(new_data)
     outfile.write(">" + species_name + "\n" + new_data2 + "\n")
-
-
     
-# IUPAC_CODES = {
-# "R": {"A":"G", "G":"A"},
-# "Y": {"C":"T", "T":"C"},
-# "S": {"G":"C", "C":"G"},
-# "W": {"A":"T", "T":"A"},
-# "K": {"G":"T", "T":"G"},
-# "M": {"A":"C", "C":"A"},
-# }
+print("\n\n~~~~\n\nResults can be found in %s.fasta\n\n~~~~" %sys.argv[2])
+
+sys.exit(0)
