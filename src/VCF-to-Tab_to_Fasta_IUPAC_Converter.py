@@ -4,12 +4,14 @@ def usage():
     print("""
     This script is intended for modifying files from vcftools that contain 
     biallelic information and convert them to fasta format. After the vcf file has
-    been exported using the vcf-to-tab program from VCFTools, this script will 
-    change biallelic information at each site to only one nucleotide using UIPAC 
-    conventions when the alleles are different (heterozygous) or to the available
-    nucleotide if both alleles are the same. If one alle is present and the other 
-    one is missing, the script will change the site to the available allele. 
-    All of these changes will be saved to a new file in fasta format.
+    been exported using the vcf-to-tab program from VCFTools, and transposed in R,
+    or Excel, this script will change biallelic information at each site to only 
+    one nucleotide using UIPAC conventions when the alleles are different 
+    (heterozygous) or to the available nucleotide if both alleles are the same. 
+    If one alle is present and the other one is missing, the script will change 
+    the site to the available allele. All of these changes will be saved to a 
+    new file in fasta format.
+    
     
     written by Simon Uribe-Convers - www.simonuribe.com
     October 23rd, 2017
