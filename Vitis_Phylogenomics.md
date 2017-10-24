@@ -31,7 +31,7 @@ vcf-to-tab < NOAMP_dataset.vcf > NOAMP_dataset_vcf_to_tab.txt
 
 ## From biallelic to single alleles
 
-The data from VCF comes with information from both alleles, i.e., A and G at a site, and we need to modify it so that there is only one base per site. We'll use IUPAC ambiguous coding for sites that have different nucleotides. I wrote a python script to do this changes easily. After the file has been transposed in R, simply run the `VCF-to-Tab_to_Fasta_IUPAC_Converter.py` script by tying: `python VCF-to-Tab_to_Fasta_IUPAC_Converter.py VCF-toTab_file Output_file`
+The data from VCF comes with information from both alleles, i.e., A and G at a site, and we need to modify it so that there is only one base per site. We'll use IUPAC ambiguous coding for sites that have different nucleotides. I wrote a python script to do this changes easily. **After the file has been transposed in R or Excel**, simply run the `VCF-to-Tab_to_Fasta_IUPAC_Converter.py` script by tying: `python VCF-to-Tab_to_Fasta_IUPAC_Converter.py VCF-toTab_file Output_file`
 
 ## Changing names of raw reads to more useful names
 
