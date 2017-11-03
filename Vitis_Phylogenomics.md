@@ -1,33 +1,38 @@
 # Vitis Phylogenomics with GBS Data
-**June 13th 2017**
+**Simon Uribe-Convers - June 13th 2017 - [http://simonuribe.com](http://simonuribe.com)**
 
 ---
-*Disclaimer:* This commands work on a Mac or other UNIX based computer. 
+*Disclaimer:* This commands work on a Mac or other Linus/UNIX based computer. 
 
 ---
-
 
 
 ## Commands used to transform VCF to Fasta for Phylogenetics
 
-```bash
-# General:
 
--vcf-to-tab < file.vcf > file.txt
--Check if there is a '#' on the first line with the headers, if there is one DELETE it!
--Transpose tab file (either in excel or in R)
-	In R:
-	x <- read.table("NOAMP_dataset_tab.txt", header = T)
-	y <- t(x)
-	write.table(y, file="NOAMP_dataset_tab_transposed.txt", row.names = T, quote = F)
--delete the four first lines of the file (if transposed with Excel, delete the first three lines). Delete everything on top of the first sample.
+In general:
 
-# Vitis Commands:
+- To get the data from VCFTools in the vcf-to-tab format:  
 
-vcf-to-tab < Basal_mod_biallele_depth_missing_indv.recode.vcf > Basal_mod_biallele_depth_missing_indv.recode_vcf_to_tab.txt
+ ```
+  -vcf-to-tab < file.vcf > file.txt
+ # For Vitis
+ vcf-to-tab < Basal_mod_biallele_depth_missing_indv.recode.vcf > Basal_mod_biallele_depth_missing_indv.recode_vcf_to_tab.txt
 vcf-to-tab < Final.recode.vcf > Final.recode_vcf_to_tab.txt 
 vcf-to-tab < NOAMP_dataset.vcf > NOAMP_dataset_vcf_to_tab.txt
 ```
+ 
+- Check if there is a '#' on the first line with the headers, if there is one DELETE it!  
+
+- Transpose tab file (either in excel or in R)  
+	In R:
+	
+	```
+	x <- read.table("NOAMP_dataset_tab.txt", header = T)  
+	y <- t(x)  
+	write.table(y, file="NOAMP_dataset_tab_transposed.txt", row.names = T, quote = F)
+	```
+- Delete the four first lines of the file (if transposed with Excel, delete the first three lines), i.e., delete everything on top of the first sample.
 
 ## From biallelic to single alleles
 
@@ -39,14 +44,14 @@ The names of the sequences were not very useful so we changed them to something 
 
 The samples had names that were not standardized and we had to do some search and replace to make then names have the same format across the samples.
 
-The code in the `Change_Names_Vitis.sh` *should* change all the names, but double check to make sure!
+The code in the `Change_Names_Vitis.sh` _should_ change all the names, but double check to make sure!
 
 
 ## Making data matrices for phylogenetic analyses
 
-There are two programs that I cannot live without while working with DNA sequences. Both of them deal with format conversion (e.g., fasta to nexus) or concatenation very smoothly. These programs are:
+The following programs are essential while working with DNA sequences. Both of them deal with format conversion (e.g., fasta to nexus) or concatenation very smoothly. These programs are:
 
-Download and install [Phyutility](https://code.google.com/archive/p/phyutility/downloads) to do file format conversion.
+Download and install [Phyutility](https://code.google.com/archive/p/phyutility/downloads) to do file format conversion. **Update:** The new program [phyx](https://github.com/FePhyFoFum/phyx) does everything that Phyutility does but much much efficiently. 
 
 Download and install [NCLconverter](http://ncl.sourceforge.net) for further file format conversion.
 
@@ -108,9 +113,11 @@ beast -beagle -beagle_CPU -beagle_SSE -beagle_GPU -threads 16 Basal_mod_biallele
 
 ## Running SVDquartets
 
-Start with a file with all loci (NSPs) concatenated into a NEXUS file, you will use this in Paup.
+Start with a file with all loci (SNPs) concatenated into a NEXUS file, you will use this in Paup.
 
-SVDquartets allows for multiple individuals from the same species to be included in the analysis, and those individual, and their information, will be combined into the taxon they belong to. For this to work however, you need to include a taxon block on your NEXUS file specifying which samples belong to which species. It should start with the species name, followed by a colon, the lines the individuals are located (or the range of lines) and a comma. Here is an example:
+**If working with a single individual per species, you can skip the following few paragraphs**  
+
+SVDquartets allows for multiple individuals from the same species to be included in the analysis, and those individuals and their information, will be combined into the taxon they belong to. For this to work however, you need to include a taxon block on your NEXUS file specifying which samples belong to which species. It should start with the species name, followed by a colon, the lines the individuals are located (or the range of lines) and a comma. Here is an example:
 
 ```
 begin sets;
@@ -130,7 +137,7 @@ This is easy to do for a few samples but if you have hundreds of individuals it 
 ### It will parse a phylip file and output the line number in which each taxon is located. Then it will write how many
 ### occurrences a specific species has and the lines of each.
 ### This works best with species names separated by an underscore, and it will assume that there are no subspecies,
-### i.e., only the fisrt two parts of the name will be used.
+### i.e., only the first two parts of the name will be used.
 ### by Matthew Pennell, July 23 2014 - http://mwpennell.github.io/
 
 ## Read in and parse phylip file
@@ -162,7 +169,9 @@ for (i in 1:length(sp.lab)){
 }
 sink()
 ```
-One you have the location of every sample from the code above, modified the text slightly to match the correct format, i.e., put every occurrence in one line, add commas, etc. Finally, copy paste your sample-to-species information at the end of your concatenated NEXUS file—don;t forget to include the few lines that the code above doesn't generate, see the format example above!
+Once you have the location of every sample from the code above, modified the text slightly to match the correct format, i.e., put every occurrence in one line, add commas, etc. Finally, copy paste your sample-to-species information at the end of your concatenated NEXUS file and don't forget to include the few lines that the code above doesn't generate, see the format example above!
+
+**Regardless of how many individuals you are working with:**
 
 Now that we have the file ready, get the latest command-line version of [Paup](https://people.sc.fsu.edu/~dswofford/paup_test/) and type the following:
 
