@@ -40,12 +40,11 @@ The data from VCF comes with information from both alleles, i.e., A and G at a s
 
 ## Changing names of raw reads to more useful names
 
-The names of the sequences were not very useful so we changed them to something more informative. 
+The names of the sequences were not very useful so we changed them to something more informative. The samples had names that were not standardized and we had to do some search and replace to make them have the same format across the samples.
 
-The samples had names that were not standardized and we had to do some search and replace to make then names have the same format across the samples.
+To do this, we created a comma separated value (.csv) file with the long, uninformative name followed by the new, standardized name. With this file, the vcf-to-tab file, and the script  `Replace_Many_Patterns.py`, we were able to change them all. 
 
-The code in the `Change_Names_Vitis.sh` _should_ change all the names, but double check to make sure!
-
+To run it, type: `python3.6 Replace_Many_Patterns.py .csv file + + vcf-to-tab file + output file` 
 
 ## Making data matrices for phylogenetic analyses
 
