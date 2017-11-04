@@ -21,17 +21,14 @@ infile = open(sys.argv[1], "r")
 data_file = open(sys.argv[2], "r")
 outfile = open(sys.argv[3], "w")
 
-# infile = open("All_Names.csv", "r")
-# data_file = open("Basal_mod_biallele_depth_missing_indv.recode_vcf_to_tab.txt", "r")
-# outfile = open("test.txt", "w")
 
 # Create dictionary with old names as keys and new names as values
 name_dic = {}
-name_to_change = []
+# name_to_change = []
 for line in infile:
     old_name = line.strip().split(",")[0]
     new_name = line.strip().split(",")[1]
-    name_to_change.append(line.strip().split(",")[0])
+    # name_to_change.append(line.strip().split(",")[0])
     
     if old_name not in name_dic:
         name_dic[old_name] = new_name
@@ -47,7 +44,8 @@ def replace_all(text, dic):
 # Read in data
 data = data_file.read()
 
-
+# Replace patterns
 data_new_names = replace_all(data, name_dic)
 
+# Write out data
 outfile.write(data_new_names)
