@@ -23,21 +23,21 @@ outfile = open(sys.argv[3], "w")
 
 
 # Create dictionary with old names as keys and new names as values
-name_dic = {}
+dictionary_names = {}
 # name_to_change = []
 for line in infile:
     old_name = line.strip().split(",")[0]
     new_name = line.strip().split(",")[1]
     # name_to_change.append(line.strip().split(",")[0])
     
-    if old_name not in name_dic:
-        name_dic[old_name] = new_name
+    if old_name not in dictionary_names:
+        dictionary_names[old_name] = new_name
 
-# new_names = [name_dic[i] for i in name_to_change]
+# new_names = [dictionary_names[i] for i in name_to_change]
 
-# Function to seacrh and replace all key for values in the dictionary
-def replace_all(text, dic):
-    for i, j in iter(dic.items()):
+# Function to search and replace all keys for values in the dictionary
+def replace_all(text, dictionary):
+    for i, j in iter(dictionary.items()):
         text = text.replace(i, j)
     return text
 
@@ -45,7 +45,7 @@ def replace_all(text, dic):
 data = data_file.read()
 
 # Replace patterns
-data_new_names = replace_all(data, name_dic)
+data_new_names = replace_all(data, dictionary_names)
 
 # Write out data
 outfile.write(data_new_names)
